@@ -254,7 +254,7 @@ def new():
                                     testimonies=testimonies,
                                     no_of_logs=len(automation.login_dict),
                                     status='Pending',
-                                    church=church,
+                                    name_of_church=church,
                                     uploader=current_user)
             db.session.add(new_automate)
             db.session.commit()
