@@ -23,7 +23,7 @@ app.config['SECRET_KEY'] = csrf
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 db_render = os.environ['dbrender']
-engine = create_engine('postgresql+psycopg2://automate_db_user:10RiLzWZJ38J4i2rffajrXA3Vngf6XWO@dpg-cmnhipocmk4c738k8avg-a/automate_db')
+# engine = create_engine('postgresql+psycopg2://automate_db_user:10RiLzWZJ38J4i2rffajrXA3Vngf6XWO@dpg-cmnhipocmk4c738k8avg-a/automate_db')
 app.config['SQLALCHEMY_DATABASE_URI'] = db_render
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
@@ -392,4 +392,4 @@ def logout():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False)
