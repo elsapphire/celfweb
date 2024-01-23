@@ -118,7 +118,7 @@ def login_page():
 
 
 @app.route('/register', methods=['POST', 'GET'])
-# @admin_only
+@admin_only
 def register():
     if request.method == 'POST':
         password = request.form.get('password')
