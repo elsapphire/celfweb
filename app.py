@@ -8,7 +8,7 @@ from werkzeug.utils import secure_filename
 from flask_bootstrap import Bootstrap
 from functools import wraps
 from sqlalchemy.orm import relationship, Mapped, mapped_column
-from sqlalchemy import String, Integer
+from sqlalchemy import String, Integer, create_engine
 from forms import AutomateForm
 import os
 from automte import Automation, check_logs
@@ -23,7 +23,7 @@ app.config['SECRET_KEY'] = csrf
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 db_render = os.environ['dbrender']
-
+engine = create_engine('postgresql+psycopg2://automate_db_user:10RiLzWZJ38J4i2rffajrXA3Vngf6XWO@dpg-cmnhipocmk4c738k8avg-a/automate_db')
 app.config['SQLALCHEMY_DATABASE_URI'] = db_render
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
