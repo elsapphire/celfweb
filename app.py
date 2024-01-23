@@ -123,7 +123,6 @@ def register():
     if request.method == 'POST':
         password = request.form.get('password')
         confirm_password = request.form.get('confirmpassword')
-        print(password, confirm_password)
         if password == confirm_password:
             user = db.session.execute(db.select(User).where(User.email == request.form.get('email'))).scalar()
             if user is None:
@@ -173,9 +172,6 @@ def dashboard():
 
     result = db.session.execute(db.select(Automate).order_by(Automate.date)).scalars()
     uploads = result.all()
-    # print(uploads.all()[0].attendance_range)
-    # for upload in uploads:
-    #     print(upload)
 
     # print(result.scalar())
     return render_template('dashboard.html', current_user=current_user, no_of_logs=total_no_logs,
@@ -227,8 +223,6 @@ def new():
         church = request.form['church']
         testimonies = request.form.get('testimonies')
         testimony_list = testimonies.split(', ')
-        # if len(type_of_meeting) == 1:
-        # print(type_of_meeting)
         if 'csv_file' not in request.files:
             flash('No file part')
             return redirect(request.url)
@@ -276,10 +270,7 @@ def new():
             os.remove(f'static/{filename}')
             return redirect(url_for('dashboard'))
         # elif len(type_of_meeting) > 1:
-        # print('More than 1')
-        # print(testimony_list)
         # meeting_date = str(request.form.get('meeting_date'))
-        # print(type(meeting_date))
     return render_template('new.html', form=form, current_user=current_user)
 
 
@@ -299,7 +290,6 @@ def running_logs():
     complete = check_logs()[3]
     work = check_logs()[1]
     final = check_logs()[4]
-    # print(final)
     total_logs = check_logs()[5]
     logs_completed = check_logs()[6]
     return render_template('running_logs.html', logs_left=logs_left1, problem_status=problem,
