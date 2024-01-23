@@ -379,8 +379,8 @@ class Automation:
                         end_ok.click()
                     # ----------------------------------End time of meeting section------------------------------------
 
-                    # submit = driver.find_element(By.XPATH, '//*[@id="fixed-table2"]/tbody/tr[13]/td[2]/input')
-                    # submit.click()
+                    submit = driver.find_element(By.XPATH, '//*[@id="fixed-table2"]/tbody/tr[13]/td[2]/input')
+                    submit.click()
                 global completed
                 completed = f'{self.login_dict[n]["email"]}.'
 

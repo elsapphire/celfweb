@@ -12,12 +12,14 @@ from sqlalchemy import String, Integer
 from forms import AutomateForm
 import os
 from automte import Automation, check_logs
+import psycopg2
 
 UPLOAD_FOLDER = 'static/'
 ALLOWED_EXTENSIONS = {'csv'}
 
+csrf = os.environ['csrf']
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'success_is_a_big_boy'
+app.config['SECRET_KEY'] = csrf
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 db_render = os.environ['dbrender']
