@@ -130,7 +130,7 @@
                                     <thead>
                                          <tr>
                                             <th>Date Uploaded</th>
-                                            <th>Meeting Date</th>
+                                            <th>Church Name</th>
                                             <th>Cell Attendance</th>
                                             <th>No. of Problem Logs</th>
                                             <th>No. of Successful Logs</th>
@@ -143,7 +143,7 @@
                                     <tfoot>
                                         <tr>
                                             <th>Date Uploaded</th>
-                                            <th>Meeting Date</th>
+                                            <th>Church Name</th>
                                             <th>Cell Attendance</th>
                                             <th>No. of Problem Logs</th>
                                             <th>No. of Successful Logs</th>
@@ -157,7 +157,7 @@
                                     {% for upload in uploads %}
                                         <tr>
                                             <td>{{upload.date}}</td>
-                                            <td>{{upload.meeting_date}}</td>
+                                            <td>{{upload.church}}</td>
                                             <td>{{upload.attendance_range}}</td>
                                             <td>{{upload.no_of_problem_logs}}</td>
                                             <td>{{upload.no_of_successful_logs}}</td>

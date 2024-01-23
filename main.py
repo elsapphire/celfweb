@@ -9,9 +9,9 @@ from flask_bootstrap import Bootstrap
 from functools import wraps
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 from sqlalchemy import String, Integer
-from forms import RegisterForm, AutomateForm
+from forms import AutomateForm
 import os
-from automte import Automation, working, problem_status, final_status, logs_left, check_logs
+from automte import Automation, check_logs
 
 UPLOAD_FOLDER = 'static/'
 ALLOWED_EXTENSIONS = {'csv'}
@@ -20,7 +20,7 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'success_is_a_big_boy'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///celfautomate.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://automate_db_user:10RiLzWZJ38J4i2rffajrXA3Vngf6XWO@dpg-cmnhipocmk4c738k8avg-a/automate_db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
@@ -55,6 +55,7 @@ class Automate(db.Model):
     sunday_attendance: Mapped[str] = mapped_column(String(100), nullable=False)
     meeting_date: Mapped[str] = mapped_column(String(100), nullable=False)
     testimonies: Mapped[str] = mapped_column(String(500), nullable=False)
+    name_of_church: Mapped[str] = mapped_column(String(100), nullable=False)
 
     no_of_logs: Mapped[int] = mapped_column(Integer, nullable=False)
     no_of_problem_logs: Mapped[int] = mapped_column(Integer, nullable=True)
@@ -219,6 +220,7 @@ def new():
         sunday1 = request.form['sunday1']
         sunday2 = request.form['sunday2']
         meeting_date = str(request.form['meeting_date'])
+        church = request.form['church']
         testimonies = request.form.get('testimonies')
         testimony_list = testimonies.split(', ')
         # if len(type_of_meeting) == 1:
@@ -254,6 +256,7 @@ def new():
                                     testimonies=testimonies,
                                     no_of_logs=len(automation.login_dict),
                                     status='Pending',
+                                    church=church,
                                     uploader=current_user)
             db.session.add(new_automate)
             db.session.commit()
