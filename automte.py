@@ -58,9 +58,10 @@ class Automation:
         total_logs = len(self.login_dict)
 
     def begin_automation(self):
-
+        ChromeDriverManager().install()
         chrome_options = webdriver.ChromeOptions()
         chrome_options.add_experimental_option('detach', True)
+        chrome_options.add_argument('--remote-debugging-pipe')
         driver = webdriver.Chrome(options=chrome_options)
 
         driver.get('https://celfonline.org/V3/index.php?r=Site/Login')
@@ -380,8 +381,8 @@ class Automation:
                         end_ok.click()
                     # ----------------------------------End time of meeting section------------------------------------
 
-                    submit = driver.find_element(By.XPATH, '//*[@id="fixed-table2"]/tbody/tr[13]/td[2]/input')
-                    submit.click()
+                    # submit = driver.find_element(By.XPATH, '//*[@id="fixed-table2"]/tbody/tr[13]/td[2]/input')
+                    # submit.click()
                 global completed
                 completed = f'{self.login_dict[n]["email"]}.'
 
