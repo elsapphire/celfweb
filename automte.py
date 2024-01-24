@@ -2,6 +2,7 @@ from random import choice
 
 import pandas
 from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import NoSuchElementException
@@ -58,11 +59,11 @@ class Automation:
         total_logs = len(self.login_dict)
 
     def begin_automation(self):
-        ChromeDriverManager().install()
         chrome_options = webdriver.ChromeOptions()
         chrome_options.add_experimental_option('detach', True)
         chrome_options.add_argument('--remote-debugging-pipe')
-        driver = webdriver.Chrome(options=chrome_options)
+
+        driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
 
         driver.get('https://celfonline.org/V3/index.php?r=Site/Login')
         self.problem_logins = {'email': [], 'password': []}
