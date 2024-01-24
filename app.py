@@ -26,11 +26,18 @@ db_render = os.environ['dbrender']
 # engine = create_engine('postgresql+psycopg2://automate_db_user:10RiLzWZJ38J4i2rffajrXA3Vngf6XWO@dpg-cmnhipocmk4c738k8avg-a/automate_db')
 app.config['SQLALCHEMY_DATABASE_URI'] = db_render
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {"pool_pre_ping": True}
+
+app.config['SQLALCHEMY_POOL_SIZE'] = 10
+app.config['SQLALCHEMY_MAX_OVERFLOW'] = 20
+app.config['SQLALCHEMY_POOL_RECYCLE'] = 1800
+
 db = SQLAlchemy(app)
 
 
 automation = Automation()
 completed = False
+main_file = ''
 
 
 # CREATE TABLE IN DB
@@ -220,7 +227,7 @@ def new():
         sunday1 = request.form['sunday1']
         sunday2 = request.form['sunday2']
         meeting_date = str(request.form['meeting_date'])
-        church = request.form['church']
+        church = request.form.get('church')
         testimonies = request.form.get('testimonies')
         testimony_list = testimonies.split(', ')
         if 'csv_file' not in request.files:
@@ -236,7 +243,8 @@ def new():
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-
+            global main_file
+            main_file = filename
             automation.read_csv(filepath=f'static/{filename}',
                                 meeting_list=type_of_meeting,
                                 attendance1=attendance1, attendance2=attendance2,
@@ -313,6 +321,16 @@ def delete_plogs():
     return redirect(url_for('dashboard'))
 
 
+@app.route('/delete-logs')
+@admin_only
+def delete_logs():
+    try:
+        os.remove(f'static/{main_file}')
+    except FileNotFoundError and PermissionError:
+        pass
+    return redirect(url_for('dashboard'))
+
+
 @app.route('/all_users')
 @login_required
 @admin_only
@@ -382,4 +400,4 @@ def logout():
 
 
 if __name__ == '__main__':
-    app.run(debug=False)
+    app.run(debug=True)
