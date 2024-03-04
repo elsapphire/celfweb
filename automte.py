@@ -26,6 +26,7 @@ class Automation:
     def __init__(self):
         self.problem_logins = None
         self.date = None
+        self.date2 = None
         self.midweek = None
         self.attendance = None
         self.meeting_list = None
@@ -36,7 +37,7 @@ class Automation:
         self.sunday = None
 
     def read_csv(self, filepath, meeting_list, testimony_list, attendance1, attendance2, first_timers1,
-                 first_timers2, midweek1, midweek2, sunday1, sunday2, date):
+                 first_timers2, midweek1, midweek2, sunday1, sunday2, date, date2):
         self.filepath = filepath
         self.meeting_list = meeting_list
         self.testimony_list = testimony_list
@@ -45,6 +46,7 @@ class Automation:
         self.midweek = list(range(int(midweek1), int(midweek2)))
         self.sunday = list(range(int(sunday1), int(sunday2)))
         self.date = date
+        self.date2 = date2
 
         pd = pandas.read_csv(f'{self.filepath}')
         emails = pd.to_dict()['email']
@@ -89,7 +91,7 @@ class Automation:
                 self.problem_logins['password'].append(self.login_dict[n]['password'])
 
                 df = pandas.DataFrame(self.problem_logins)
-                df.to_csv('static/problem_logss.csv')
+                df.to_csv('static/problem_logs.csv')
 
                 try:
                     log_out = driver.find_element(By.LINK_TEXT, 'LOGOUT')
@@ -128,7 +130,7 @@ class Automation:
                             self.problem_logins['password'].append(self.login_dict[n]['password'])
 
                             df = pandas.DataFrame(self.problem_logins)
-                            df.to_csv('static/problem_logss.csv')
+                            df.to_csv('static/problem_logs.csv')
 
                             log_out = driver.find_element(By.LINK_TEXT, 'Log out')
                             log_out.click()
@@ -141,7 +143,7 @@ class Automation:
                             new_attendance = choice(self.attendance)
                             new_first_timers = choice(self.first_timers)
                             new_new_converts = choice([new_first_timers - 3, new_first_timers - 4])
-                            new_holy_spirit = choice([new_new_converts - 2, new_new_converts - 3, new_new_converts - 4])
+                            new_holy_spirit = choice([new_new_converts - 2, new_new_converts - 3])
 
                             new_midweek = choice(self.midweek)
                             new_church = choice(self.sunday)
@@ -172,7 +174,7 @@ class Automation:
                             self.problem_logins['password'].append(self.login_dict[n]['password'])
 
                             df = pandas.DataFrame(self.problem_logins)
-                            df.to_csv('problem_logss.csv')
+                            df.to_csv('static/problem_logs.csv')
 
                             log_out = driver.find_element(By.LINK_TEXT, 'Log out')
                             log_out.click()
@@ -185,7 +187,7 @@ class Automation:
                             new_attendance = choice(self.attendance)
                             new_first_timers = choice(self.first_timers)
                             new_new_converts = choice([new_first_timers - 3, new_first_timers - 4])
-                            new_holy_spirit = choice([new_new_converts - 2, new_new_converts - 3, new_new_converts - 4])
+                            new_holy_spirit = choice([new_new_converts - 2, new_new_converts - 3])
 
                             new_midweek = choice(self.midweek)
                             new_church = choice(self.sunday)
@@ -196,8 +198,7 @@ class Automation:
 
                     elif i == 'bs2':
                         try:
-                            type_of_meeting = driver.find_element(By.XPATH, '//*[@id="fixed-table2"]/tbody/tr[1]'
-                                                                            '/td[2]/div/div[3]/label/input')
+                            type_of_meeting = driver.find_element(By.XPATH, 'c')
                             type_of_meeting.click()
                         except ElementClickInterceptedException:
                             # -------------Close Pop Up----------------
@@ -216,7 +217,7 @@ class Automation:
                             self.problem_logins['password'].append(self.login_dict[n]['password'])
 
                             df = pandas.DataFrame(self.problem_logins)
-                            df.to_csv('problem_logss.csv')
+                            df.to_csv('static/problem_logs.csv')
 
                             log_out = driver.find_element(By.LINK_TEXT, 'Log out')
                             log_out.click()
@@ -224,12 +225,12 @@ class Automation:
                         else:
                             date_of_meeting = driver.find_element(By.ID, 'CmisCellLeadersReport_date_of_meeting')
                             date_of_meeting.click()
-                            date_of_meeting.send_keys(self.date)
+                            date_of_meeting.send_keys(self.date2)
 
                             new_attendance = choice(self.attendance)
                             new_first_timers = choice(self.first_timers)
                             new_new_converts = choice([new_first_timers - 3, new_first_timers - 4])
-                            new_holy_spirit = choice([new_new_converts - 2, new_new_converts - 3, new_new_converts - 4])
+                            new_holy_spirit = choice([new_new_converts - 2, new_new_converts - 3])
 
                             new_midweek = choice(self.midweek)
                             new_church = choice(self.sunday)
@@ -260,7 +261,7 @@ class Automation:
                             self.problem_logins['password'].append(self.login_dict[n]['password'])
 
                             df = pandas.DataFrame(self.problem_logins)
-                            df.to_csv('problem_logss.csv')
+                            df.to_csv('static/problem_logs.csv')
 
                             log_out = driver.find_element(By.LINK_TEXT, 'Log out')
                             log_out.click()
@@ -272,7 +273,7 @@ class Automation:
                             new_attendance = choice(self.attendance)
                             new_first_timers = choice(self.first_timers)
                             new_new_converts = choice([new_first_timers - 3, new_first_timers - 4])
-                            new_holy_spirit = choice([new_new_converts - 2, new_new_converts - 3, new_new_converts - 4])
+                            new_holy_spirit = choice([new_new_converts - 2, new_new_converts - 3])
 
                             new_midweek = choice(self.midweek)
                             new_church = choice(self.sunday)
@@ -286,6 +287,18 @@ class Automation:
                                                          '//*[@id="CmisCellLeadersReport_total_no_at_cell_meeting"]')
                         attendance.clear()
                         attendance.send_keys(new_attendance)
+                    # except NoSuchElementException:
+                    #     # global problem_status
+                    #     problem_status = (f'Problem with {self.login_dict[n]["email"]}. '
+                    #                       f'Number {n + 1}/{len(self.login_dict)}. \nLogging Out...')
+                    #     self.problem_logins['email'].append(self.login_dict[n]['email'])
+                    #     self.problem_logins['password'].append(self.login_dict[n]['password'])
+                    #
+                    #     df = pandas.DataFrame(self.problem_logins)
+                    #     df.to_csv('static/problem_logs.csv')
+                    #
+                    #     log_out = driver.find_element(By.LINK_TEXT, 'Log out')
+                    #     log_out.click()
                     except ElementNotInteractableException:
                         attendance = driver.find_element(By.XPATH,
                                                          '//*[@id="CmisCellLeadersReport_1_total_no_at_bible_study"]')
@@ -314,7 +327,7 @@ class Automation:
                     sunday_service.clear()
                     sunday_service.send_keys(new_church)
 
-                    # -----------------------------------Time of meeting----------------------------------------------
+                    # -------------------------------Time of meeting----------------------------------------------
                     try:
                         start_time = driver.find_element(By.XPATH, '//*[@id="_easyui_textbox_input1"]')
                         start_time.click()
@@ -380,7 +393,7 @@ class Automation:
                         end_ok = driver.find_element(By.XPATH,
                                                      '/html/body/div[3]/div/div[2]/table/tbody/tr/td[1]/a')
                         end_ok.click()
-                    # ----------------------------------End time of meeting section------------------------------------
+                    # ------------------------------End time of meeting section------------------------------------
 
                     submit = driver.find_element(By.XPATH, '//*[@id="fixed-table2"]/tbody/tr[13]/td[2]/input')
                     submit.click()
@@ -405,6 +418,8 @@ class Automation:
 
                     log_out = driver.find_element(By.LINK_TEXT, 'Log out')
                     log_out.click()
+                except NoSuchElementException:
+                    pass
 
         global final_status
         final_status = (f'Completed. Submitted reports for {len(self.login_dict) - len(self.problem_logins["email"])} '
@@ -412,5 +427,5 @@ class Automation:
 
         df = pandas.DataFrame(self.problem_logins)
         # print(df)
-        df.to_csv('static/problem_logss.csv')
+        df.to_csv('static/problem_logs.csv')
         driver.quit()

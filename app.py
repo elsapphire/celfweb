@@ -8,11 +8,10 @@ from werkzeug.utils import secure_filename
 from flask_bootstrap import Bootstrap
 from functools import wraps
 from sqlalchemy.orm import relationship, Mapped, mapped_column
-from sqlalchemy import String, Integer, create_engine
+from sqlalchemy import String, Integer
 from forms import AutomateForm
 import os
 from automte import Automation, check_logs
-import psycopg2
 
 UPLOAD_FOLDER = 'static/'
 ALLOWED_EXTENSIONS = {'csv'}
@@ -23,8 +22,9 @@ app.config['SECRET_KEY'] = csrf
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 db_render = os.environ['dbrender']
-# engine = create_engine('postgresql+psycopg2://automate_db_user:10RiLzWZJ38J4i2rffajrXA3Vngf6XWO@dpg-cmnhipocmk4c738k8avg-a/automate_db')
-app.config['SQLALCHEMY_DATABASE_URI'] = db_render
+# engine = create_engine('postgresql+psycopg2://automate_db_user:10RiLzWZJ38J4i2rffajrXA3Vngf6XWO@dpg-
+# cmnhipocmk4c738k8avg-a/automate_db')
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///celfautomate.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {"pool_pre_ping": True}
 
@@ -34,8 +34,6 @@ app.config['SQLALCHEMY_POOL_RECYCLE'] = 1800
 
 db = SQLAlchemy(app)
 
-
-automation = Automation()
 completed = False
 main_file = ''
 
@@ -125,7 +123,7 @@ def login_page():
 
 
 @app.route('/register', methods=['POST', 'GET'])
-@admin_only
+# @admin_only
 def register():
     if request.method == 'POST':
         password = request.form.get('password')
@@ -163,7 +161,7 @@ def dashboard():
     no_of_logs = db.session.execute(db.select(Automate.no_of_logs)).scalars().all()
     no_of_problem_logs = db.session.execute(db.select(Automate.no_of_problem_logs)).scalars().all()
     no_of_successful_logs = db.session.execute(db.select(Automate.no_of_successful_logs)).scalars().all()
-
+    # print(no_of_logs, no_of_problem_logs, no_of_successful_logs)
     try:
         total_no_logs = sum(map(int, no_of_logs))
 
@@ -227,9 +225,14 @@ def new():
         sunday1 = request.form['sunday1']
         sunday2 = request.form['sunday2']
         meeting_date = str(request.form['meeting_date'])
+        meeting_date2 = str(request.form['meeting_date2'])
         church = request.form.get('church')
         testimonies = request.form.get('testimonies')
         testimony_list = testimonies.split(', ')
+        month1 = f"{meeting_date.split('-')[1]}"
+        day1 = f"{meeting_date.split('-')[2]}"
+        month2 = f"{meeting_date2.split('-')[1]}"
+        day2 = f"{meeting_date2.split('-')[2]}"
         if 'csv_file' not in request.files:
             flash('No file part')
             return redirect(request.url)
@@ -245,13 +248,16 @@ def new():
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             global main_file
             main_file = filename
+
+            automation = Automation()
+
             automation.read_csv(filepath=f'static/{filename}',
                                 meeting_list=type_of_meeting,
                                 attendance1=attendance1, attendance2=attendance2,
                                 first_timers1=ft1, first_timers2=ft2,
                                 midweek1=ma1, midweek2=ma2,
-                                sunday1=sunday1, sunday2=sunday2, date=meeting_date.split('-')[2],
-                                testimony_list=testimony_list)
+                                sunday1=sunday1, sunday2=sunday2, date=f"{day1}{month1}",
+                                testimony_list=testimony_list, date2=f"{day2}{month2}")
 
             new_automate = Automate(date=date.today().strftime("%B %d, %Y"),
                                     attendance_range=f'{attendance1}, {attendance2}',
@@ -262,8 +268,8 @@ def new():
                                     testimonies=testimonies,
                                     no_of_logs=len(automation.login_dict),
                                     status='Pending',
-                                    name_of_church=church,
                                     uploader=current_user)
+                                    name_of_church=church,
             db.session.add(new_automate)
             db.session.commit()
 
@@ -308,14 +314,14 @@ def running_logs():
 @app.route('/download')
 @login_required
 def download():
-    return send_from_directory(directory='static', path='problem_logss.csv')
+    return send_from_directory(directory='static', path='problem_logs.csv')
 
 
 @app.route('/delete-plog')
 @admin_only
 def delete_plogs():
     try:
-        os.remove(f'static/problem_logss.csv')
+        os.remove(f'static/problem_logs.csv')
     except FileNotFoundError:
         pass
     return redirect(url_for('dashboard'))
@@ -400,4 +406,4 @@ def logout():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host='192.168.43.237')
