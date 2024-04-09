@@ -16,9 +16,9 @@ from automte import Automation, check_logs
 UPLOAD_FOLDER = 'static/'
 ALLOWED_EXTENSIONS = {'csv'}
 
-csrf = os.environ['csrf']
+# csrf = os.environ['csrf']
 app = Flask(__name__)
-app.config['SECRET_KEY'] = csrf
+app.config['SECRET_KEY'] = 'csrf'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 db_render = os.environ['dbrender']
@@ -268,8 +268,8 @@ def new():
                                     testimonies=testimonies,
                                     no_of_logs=len(automation.login_dict),
                                     status='Pending',
-                                    uploader=current_user)
-                                    name_of_church=church,
+                                    uploader=current_user,
+                                    name_of_church=church)
             db.session.add(new_automate)
             db.session.commit()
 
